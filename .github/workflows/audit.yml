@@ -12,11 +12,12 @@ jobs:
       with:
         dotnet-version: 8.0.x
 
+    # Apuntamos DIRECTAMENTE al archivo de proyecto de Test
     - name: Restore dependencies
-      run: dotnet restore
+      run: dotnet restore tests/PureStackLogistics.Tests/PureStackLogistics.Tests.csproj
 
     - name: Build
-      run: dotnet build --no-restore
+      run: dotnet build tests/PureStackLogistics.Tests/PureStackLogistics.Tests.csproj --no-restore
 
     - name: Test
-      run: dotnet test --no-build --verbosity normal
+      run: dotnet test tests/PureStackLogistics.Tests/PureStackLogistics.Tests.csproj --no-build --verbosity normal

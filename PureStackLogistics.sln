@@ -1,8 +1,0 @@
-<Solution>
-  <Folder Name="/src/">
-    <Project Path="src/PureStackLogistics/PureStackLogistics.csproj" />
-  </Folder>
-  <Folder Name="/tests/">
-    <Project Path="tests/PureStackLogistics.Tests/PureStackLogistics.Tests.csproj" />
-  </Folder>
-</Solution>

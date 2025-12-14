@@ -1,5 +1,7 @@
 # 📦 PureStack .NET Challenge: Enterprise Logistics, Clean Architecture &amp; LINQ.
 
+PureStack.es - Engineering. Validated by Code.
+
 ### Context
 Welcome to the **PureStack Technical Validation Protocol** for .NET Engineering.
 In enterprise logistics, data integrity and efficient querying are paramount. We don't just want code that works; we want code that scales and follows **SOLID principles**.

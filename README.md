@@ -1,62 +1,91 @@
-# 📦 PureStack .NET Challenge: Enterprise Logistics, Clean Architecture &amp; LINQ.
+# 📦 PureStack .NET Challenge: Enterprise Logistics, Clean Architecture & LINQ
 
-PureStack.es - Engineering. Validated by Code.
-
-### Context
-Welcome to the **PureStack Technical Validation Protocol** for .NET Engineering.
-In enterprise logistics, data integrity and efficient querying are paramount. We don't just want code that works; we want code that scales and follows **SOLID principles**.
-
-**⚠️ The Standard:** Use **Dependency Injection**, **Entity Framework Core**, and **LINQ**.
+**PureStack.es - Engineering Validation Protocol.**
+> *"We don't just want code that compiles. We want code that scales."*
 
 ---
 
-### 🎯 The Objective
-You are building the Inventory Microservice.
-Your mission is to implement the `InventoryService` to handle products in a warehouse.
+### 📋 Context & Mission
+Welcome to the PureStack Technical Validation Protocol for .NET Engineering.
+In enterprise logistics, data integrity, efficient querying, and architecture are paramount.
 
-1.  **The Stack:** .NET 8, EF Core (In-Memory), xUnit.
-2.  **The Features:**
-    * **Add Product:** Validate inputs (Price > 0) and save to DB.
-    * **Get Stock:** Retrieve products filtering by Category (optional) and perform a stock check.
-    * **Business Logic:** If a product name contains "Hazardous", it requires a special flag.
+**The Mission:** You are building the core of an **Inventory Microservice**.
+Your task is to implement the `InventoryService` to handle products in a high-volume warehouse context. We expect adherence to **SOLID principles** and modern C# features.
+
+### 🚦 Certification Levels (Choose your Difficulty)
+This challenge is scalable. Your seniority level will be determined by the architectural depth of your solution. Please state in your Pull Request which level you are aiming for.
+
+#### 🥉 Level 3: Essential / Mid-Level
+* **Focus:** Logic & LINQ Proficiency.
+* **Requirement:** Implement `InventoryService` to pass the basic unit tests.
+* **Tasks:**
+    1.  **Add Product:** Validate inputs (Price > 0, Name not empty) and save to DB using EF Core.
+    2.  **Get Stock:** Retrieve products using **LINQ**. Implement filtering by 'Category'.
+    3.  **Business Logic:** Apply a "Hazardous" flag if the name contains specific keywords (e.g., "Chemical").
+* **Deliverable:** Working `InventoryService.cs` that passes all tests (Green Light).
+
+#### 🥈 Level 2: Pro / Senior
+* **Focus:** Decoupling & Pattern Usage.
+* **Requirement:** Everything in Level 3 + **DTOs & Repository Pattern**.
+* **Extra Tasks:**
+    1.  **No Leaky Abstractions:** Do NOT return Entity Framework entities (`Product`) directly from the Service. Create and return **DTOs** (Data Transfer Objects).
+    2.  **Repository Pattern:** Abstract the EF Core context behind an `IProductRepository`. The Service should not depend directly on `AppDbContext`.
+    3.  **Custom Exceptions:** Implement specific domain exceptions (e.g., `ProductNotFoundException`) instead of generic errors.
+* **Deliverable:** A Clean Architecture approach where the Domain is protected from the Infrastructure.
+
+#### 🥇 Level 1: Elite / Architect
+* **Focus:** Concurrency, Async/Await & Robustness.
+* **Requirement:** Everything above + **Optimistic Concurrency & Asynchrony**.
+* **Extra Tasks:**
+    1.  **Async/Await:** Ensure the entire pipeline (Controller -> Service -> Repo -> DB) is fully asynchronous (`Task<T>`, `await`, `CancellationToken`).
+    2.  **Concurrency Control:** Handle **Race Conditions**. Implement **Optimistic Locking** (using a Version/Timestamp field) to prevent two users from updating the stock of the same product simultaneously.
+    3.  **Extension Methods:** Create a custom LINQ extension method for complex filtering logic to keep the Service clean.
+* **Deliverable:** A high-performance, thread-safe service ready for high-load scenarios.
+
+---
 
 ### 🛠️ Tech Stack Requirements
 * **Framework:** .NET 8.0 (Core).
-* **ORM:** Entity Framework Core (In-Memory Database).
-* **Testing:** xUnit + FluentAssertions (optional).
-
-## 🧪 Evaluation Criteria (How we Audit You)
-
-We will run `dotnet test`. We look for:
-
-* **Green Lights:** All unit tests **must** pass.
-* **LINQ Usage:** Did you use `.Where()` and `.Select()` efficiently?
-* **DI Registration:** Did you register your Service in `Program.cs` correctly?
+* **ORM:** Entity Framework Core (In-Memory Database for testing).
+* **Testing:** xUnit + FluentAssertions.
+* **Paradigm:** Dependency Injection (DI) is mandatory.
 
 ---
 
-## 🚀 Getting Started
+### 🚀 Execution Instructions
 
-1.  Use this **template**.
+1.  **Use this template** (Fork the repo).
 2.  Restore packages: `dotnet restore`.
-3.  Implement `src/PureStackLogistics/Services/InventoryService.cs`.
+3.  Implement your solution in `src/PureStackLogistics/Services/InventoryService.cs` (and create new files for DTOs/Repos if aiming for Level 2/1).
 4.  Run tests: `dotnet test`.
-5.  Submit via **Pull Request**.
+5.  Submit via **Pull Request** stating your target Level.
+
+### 🧪 Evaluation Criteria (PureStack Audit)
+
+| Criteria | Weight | Audit Focus |
+| :--- | :--- | :--- |
+| **Correctness** | 30% | Do tests pass? Is the logic sound? |
+| **LINQ Mastery** | 25% | Efficient use of `.Where()`, `.Select()`, and deferred execution. |
+| **Architecture** | 30% | Dependency Injection usage. Separation of Concerns (Entities vs DTOs). |
+| **Modern C#** | 15% | Usage of Records, Pattern Matching, and Async/Await best practices. |
 
 ---
 
-### 🚨 CRITICAL: Project Structure
-To ensure our **Automated Auditor** works, keep this solution structure:
+### 🚨 Project Structure (Guideline)
+To ensure our **Automated Auditor** works, keep the core solution structure intact:
 
 ```text
 src/
 └── PureStackLogistics/
     ├── Data/
-    │   └── AppDbContext.cs   <-- (El código de arriba)
+    │   └── AppDbContext.cs   
     ├── Models/
-    │   └── Product.cs        <-- (El código de arriba)
+    │   └── Product.cs        
     ├── Services/
-    │   └── InventoryService.cs
-    ├── Controllers/          (Puede estar vacío)
+    │   ├── IInventoryService.cs
+    │   └── InventoryService.cs <-- YOUR CORE LOGIC
+    ├── DTOs/                 <-- (Recommended for Level 2+)
+    ├── Repositories/         <-- (Recommended for Level 2+)
+    ├── Controllers/          
     ├── Program.cs
     └── PureStackLogistics.csproj

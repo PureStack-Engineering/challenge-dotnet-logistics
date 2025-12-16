@@ -1,4 +1,4 @@
-# 📦 PureStack .NET Challenge: Enterprise Logistics, Clean Architecture & LINQ
+# 📦 PureStack .NET Challenge: Enterprise Logistics
 
 **PureStack.es - Engineering Validation Protocol.**
 > *"We don't just want code that compiles. We want code that scales."*
@@ -7,90 +7,94 @@
 
 ### 📋 Context & Mission
 Welcome to the PureStack Technical Validation Protocol for .NET Engineering.
-In enterprise logistics, data integrity, efficient querying, and architecture are paramount.
 
-**The Mission:** You are building the core of an **Inventory Microservice**.
-Your task is to implement the `InventoryService` to handle products in a high-volume warehouse context. We expect adherence to **SOLID principles** and modern C# features.
+**The Scenario:** You are building the core of an **Inventory Microservice** for a high-volume warehouse. The basic structure is set up, but the logic is missing.
+**The Mission:** Implement the `InventoryService` class to handle product creation and retrieval, adhering to **SOLID principles**.
 
 ### 🚦 Certification Levels (Choose your Difficulty)
-This challenge is scalable. Your seniority level will be determined by the architectural depth of your solution. Please state in your Pull Request which level you are aiming for.
+State your target level in your Pull Request.
 
 #### 🥉 Level 3: Essential / Mid-Level
-* **Focus:** Logic & LINQ Proficiency.
-* **Requirement:** Implement `InventoryService` to pass the basic unit tests.
+* **Focus:** Logic, LINQ & EF Core.
+* **Requirement:** Pass the provided Unit Tests (`dotnet test`).
 * **Tasks:**
-    1.  **Add Product:** Validate inputs (Price > 0, Name not empty) and save to DB using EF Core.
-    2.  **Get Stock:** Retrieve products using **LINQ**. Implement filtering by 'Category'.
-    3.  **Business Logic:** Apply a "Hazardous" flag if the name contains specific keywords (e.g., "Chemical").
-* **Deliverable:** Working `InventoryService.cs` that passes all tests (Green Light).
+    1.  **Implement `AddProduct`:**
+        * Must validate inputs (Price > 0, Name not empty).
+        * Must save to the In-Memory Database.
+    2.  **Implement `GetStock`:**
+        * Retrieve products using **LINQ**.
+        * If `category` filter is provided, apply it.
+    3.  **Business Logic:** Automatically set the `IsHazardous` flag to `true` if the product name contains "Chemical" or "Acid".
+* **Deliverable:** A functional service. The tests must pass (Green Light).
 
 #### 🥈 Level 2: Pro / Senior
-* **Focus:** Decoupling & Pattern Usage.
-* **Requirement:** Everything in Level 3 + **DTOs & Repository Pattern**.
+* **Focus:** Clean Architecture & Pattern Usage.
+* **Requirement:** Everything in Level 3 + **Repository Pattern**.
 * **Extra Tasks:**
-    1.  **No Leaky Abstractions:** Do NOT return Entity Framework entities (`Product`) directly from the Service. Create and return **DTOs** (Data Transfer Objects).
-    2.  **Repository Pattern:** Abstract the EF Core context behind an `IProductRepository`. The Service should not depend directly on `AppDbContext`.
-    3.  **Custom Exceptions:** Implement specific domain exceptions (e.g., `ProductNotFoundException`) instead of generic errors.
-* **Deliverable:** A Clean Architecture approach where the Domain is protected from the Infrastructure.
+    1.  **Decoupling:** Refactor the service so it does NOT depend on `AppDbContext` directly. Create an `IProductRepository`.
+    2.  **DTOs:** The service should return `ProductDto` objects, not the raw Entity.
+    3.  **Dependency Injection:** Remember to register your new Repository in `Program.cs`.
+* **Deliverable:** A decoupled architecture where the Domain is protected from Infrastructure.
 
 #### 🥇 Level 1: Elite / Architect
-* **Focus:** Concurrency, Async/Await & Robustness.
-* **Requirement:** Everything above + **Optimistic Concurrency & Asynchrony**.
+* **Focus:** Concurrency & Async/Await.
+* **Requirement:** Everything above + **Thread Safety**.
 * **Extra Tasks:**
-    1.  **Async/Await:** Ensure the entire pipeline (Controller -> Service -> Repo -> DB) is fully asynchronous (`Task<T>`, `await`, `CancellationToken`).
-    2.  **Concurrency Control:** Handle **Race Conditions**. Implement **Optimistic Locking** (using a Version/Timestamp field) to prevent two users from updating the stock of the same product simultaneously.
-    3.  **Extension Methods:** Create a custom LINQ extension method for complex filtering logic to keep the Service clean.
-* **Deliverable:** A high-performance, thread-safe service ready for high-load scenarios.
+    1.  **Async All The Way:** Refactor all methods to use `Task<T>`, `await`, and `SaveChangesAsync`.
+    2.  **Concurrency Control:** Handle **Race Conditions**. Implement logic to prevent two users from modifying the same stock simultaneously (Optimistic Locking).
+* **Deliverable:** A high-performance, thread-safe service.
 
 ---
 
-### 🛠️ Tech Stack Requirements
+### 🛠️ Tech Stack & Constraints
 * **Framework:** .NET 8.0 (Core).
-* **ORM:** Entity Framework Core (In-Memory Database for testing).
+* **Data:** Entity Framework Core (configured with In-Memory Provider).
 * **Testing:** xUnit + FluentAssertions.
-* **Paradigm:** Dependency Injection (DI) is mandatory.
+* **Contract:** You MUST implement the `IInventoryService` interface methods as defined.
 
 ---
 
 ### 🚀 Execution Instructions
 
-1.  **Use this template** (Fork the repo).
-2.  Restore packages: `dotnet restore`.
-3.  Implement your solution in `src/PureStackLogistics/Services/InventoryService.cs` (and create new files for DTOs/Repos if aiming for Level 2/1).
-4.  Run tests: `dotnet test`.
-5.  Submit via **Pull Request** stating your target Level.
+1.  **Fork** this repository.
+2.  Restore dependencies:
+    ```bash
+    dotnet restore
+    ```
+3.  **Implement your solution** in `src/PureStackLogistics/Services/InventoryService.cs`.
+4.  Run the validation suite:
+    ```bash
+    dotnet test
+    ```
+5.  Submit via **Pull Request**.
+
+> **Note:** You will see a ❌ (**Red Cross**) initially because the methods throw `NotImplementedException`. Your goal is to turn it ✅ (**Green**).
 
 ### 🧪 Evaluation Criteria (PureStack Audit)
 
 | Criteria | Weight | Audit Focus |
 | :--- | :--- | :--- |
 | **Correctness** | 30% | Do tests pass? Is the logic sound? |
-| **LINQ Mastery** | 25% | Efficient use of `.Where()`, `.Select()`, and deferred execution. |
-| **Architecture** | 30% | Dependency Injection usage. Separation of Concerns (Entities vs DTOs). |
-| **Modern C#** | 15% | Usage of Records, Pattern Matching, and Async/Await best practices. |
+| **LINQ Mastery** | 25% | Efficient use of `.Where()`, `.Select()` vs `.ToList()` (Materialization). |
+| **Architecture** | 30% | Proper use of Dependency Injection and Separation of Concerns. |
+| **Code Style** | 15% | Naming conventions, null checks, and exception handling. |
 
 ---
 
-### 🚨 Project Structure (Guideline)
-To ensure our **Automated Auditor** works, keep the core solution structure intact:
+### 🚨 Project Structure (Strict)
+To ensure our **Automated Auditor** works, keep this structure:
 
 ```text
 /
-├── .github/
-│   └── workflows/
-│       └── audit.yml               # Automated CI Pipeline (Runs tests on every Push)
+├── .github/workflows/              # PureStack Audit System
 ├── src/
 │   └── PureStackLogistics/
-│       ├── Data/                   # Database Context (EF Core Configuration)
-│       ├── Models/                 # Domain Entities (Database Schema / Business Objects)
-│       ├── Services/               # Business Logic Layer (The Core Implementation)
-│       ├── Program.cs              # Application Entry Point & Dependency Injection Setup
-│       └── PureStackLogistics.csproj # Main Project Configuration & Nuget Dependencies
+│       ├── Data/                   # DbContext
+│       ├── Models/                 # Entities (Product.cs)
+│       ├── Services/
+│       │   └── InventoryService.cs # <--- YOUR CODE HERE
+│       └── Program.cs              # DI Configuration
 ├── tests/
-│   └── PureStackLogistics.Tests/
-│       ├── InventoryTests.cs       # Unit Tests (xUnit) to validate the Services
-│       └── PureStackLogistics.Tests.csproj # Test Project Configuration
-├── .gitignore                      # Files to exclude from Git (bin, obj, user prefs)
-├── LICENSE                         # Repository License
-├── PureStackLogistics.sln          # Solution File (Links Source and Tests together - CRITICAL)
-└── README.md                       # Challenge Instructions & Evaluation Criteria
+│   └── PureStackLogistics.Tests/   # xUnit Tests
+├── PureStackLogistics.sln          # Solution File
+└── README.md

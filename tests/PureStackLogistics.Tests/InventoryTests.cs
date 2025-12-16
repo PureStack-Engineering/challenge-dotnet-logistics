@@ -9,7 +9,6 @@ namespace PureStackLogistics.Tests;
 
 public class InventoryTests
 {
-    // Helper para crear una DB limpia en memoria para cada test
     private AppDbContext GetInMemoryDbContext()
     {
         var options = new DbContextOptionsBuilder<AppDbContext>()
@@ -19,18 +18,24 @@ public class InventoryTests
     }
 
     [Fact]
-    public async Task AddProduct_ShouldPersistData_WhenValid()
+    public async Task AddProduct_ShouldSaveToDatabase()
     {
-        // Arrange (Preparar)
+        // Arrange
         var context = GetInMemoryDbContext();
         var service = new InventoryService(context);
-        var product = new Product { Name = "Test Item", Price = 100, Stock = 5, Category = "General" };
+        var product = new Product 
+        { 
+            Name = "Laptop", 
+            Price = 1200, 
+            Stock = 10, 
+            Category = "Electronics" 
+        };
 
-        // Act (Ejecutar)
+        // Act
         var result = await service.AddProductAsync(product);
 
-        // Assert (Verificar - Smoke Test)
-        result.Id.Should().BeGreaterThan(0); // Verifica que la DB generó un ID
-        context.Products.Count().Should().Be(1); // Verifica que se guardó
+        // Assert
+        result.Id.Should().BeGreaterThan(0);
+        context.Products.Count().Should().Be(1);
     }
 }

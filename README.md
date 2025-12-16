@@ -76,19 +76,21 @@ To ensure our **Automated Auditor** works, keep the core solution structure inta
 
 ```text
 /
-├── PureStackLogistics.sln             <-- (Archivo Solución raíz)
+├── .github/
+│   └── workflows/
+│       └── audit.yml               # Automated CI Pipeline (Runs tests on every Push)
 ├── src/
 │   └── PureStackLogistics/
-│       ├── PureStackLogistics.csproj
-│       ├── Program.cs
-│       ├── Data/
-│       │   └── AppDbContext.cs
-│       ├── Models/
-│       │   └── Product.cs
-│       └── Services/
-│           ├── IInventoryService.cs
-│           └── InventoryService.cs
-└── tests/
-    └── PureStackLogistics.Tests/
-        ├── PureStackLogistics.Tests.csproj
-        └── InventoryTests.cs
+│       ├── Data/                   # Database Context (EF Core Configuration)
+│       ├── Models/                 # Domain Entities (Database Schema / Business Objects)
+│       ├── Services/               # Business Logic Layer (The Core Implementation)
+│       ├── Program.cs              # Application Entry Point & Dependency Injection Setup
+│       └── PureStackLogistics.csproj # Main Project Configuration & Nuget Dependencies
+├── tests/
+│   └── PureStackLogistics.Tests/
+│       ├── InventoryTests.cs       # Unit Tests (xUnit) to validate the Services
+│       └── PureStackLogistics.Tests.csproj # Test Project Configuration
+├── .gitignore                      # Files to exclude from Git (bin, obj, user prefs)
+├── LICENSE                         # Repository License
+├── PureStackLogistics.sln          # Solution File (Links Source and Tests together - CRITICAL)
+└── README.md                       # Challenge Instructions & Evaluation Criteria

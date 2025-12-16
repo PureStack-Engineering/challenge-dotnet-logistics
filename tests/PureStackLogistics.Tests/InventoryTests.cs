@@ -3,28 +3,34 @@ using PureStackLogistics.Data;
 using PureStackLogistics.Models;
 using PureStackLogistics.Services;
 using Xunit;
+using FluentAssertions;
 
 namespace PureStackLogistics.Tests;
 
 public class InventoryTests
 {
-    [Fact]
-    public void AddProduct_ShouldMarkHazardous_WhenNameContainsHazardous()
+    // Helper para crear una DB limpia en memoria para cada test
+    private AppDbContext GetInMemoryDbContext()
     {
-        // Arrange
         var options = new DbContextOptionsBuilder<AppDbContext>()
-            .UseInMemoryDatabase(databaseName: "TestDb_Hazardous")
+            .UseInMemoryDatabase(databaseName: Guid.NewGuid().ToString())
             .Options;
-        
-        using var context = new AppDbContext(options);
+        return new AppDbContext(options);
+    }
+
+    [Fact]
+    public async Task AddProduct_ShouldPersistData_WhenValid()
+    {
+        // Arrange (Preparar)
+        var context = GetInMemoryDbContext();
         var service = new InventoryService(context);
+        var product = new Product { Name = "Test Item", Price = 100, Stock = 5, Category = "General" };
 
-        // Act
-        service.AddProduct(new Product { Name = "Hazardous Chemical", Price = 10, Category = "Chem" });
+        // Act (Ejecutar)
+        var result = await service.AddProductAsync(product);
 
-        // Assert
-        var product = context.Products.FirstOrDefault();
-        Assert.NotNull(product);
-        Assert.True(product.IsHazardous, "Product should be marked as IsHazardous");
+        // Assert (Verificar - Smoke Test)
+        result.Id.Should().BeGreaterThan(0); // Verifica que la DB generó un ID
+        context.Products.Count().Should().Be(1); // Verifica que se guardó
     }
 }

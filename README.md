@@ -75,17 +75,20 @@ This challenge is scalable. Your seniority level will be determined by the archi
 To ensure our **Automated Auditor** works, keep the core solution structure intact:
 
 ```text
-src/
-└── PureStackLogistics/
-    ├── Data/
-    │   └── AppDbContext.cs   
-    ├── Models/
-    │   └── Product.cs        
-    ├── Services/
-    │   ├── IInventoryService.cs
-    │   └── InventoryService.cs <-- YOUR CORE LOGIC
-    ├── DTOs/                 <-- (Recommended for Level 2+)
-    ├── Repositories/         <-- (Recommended for Level 2+)
-    ├── Controllers/          
-    ├── Program.cs
-    └── PureStackLogistics.csproj
+/
+├── PureStackLogistics.sln             <-- (Archivo Solución raíz)
+├── src/
+│   └── PureStackLogistics/
+│       ├── PureStackLogistics.csproj
+│       ├── Program.cs
+│       ├── Data/
+│       │   └── AppDbContext.cs
+│       ├── Models/
+│       │   └── Product.cs
+│       └── Services/
+│           ├── IInventoryService.cs
+│           └── InventoryService.cs
+└── tests/
+    └── PureStackLogistics.Tests/
+        ├── PureStackLogistics.Tests.csproj
+        └── InventoryTests.cs

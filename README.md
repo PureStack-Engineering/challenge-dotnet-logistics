@@ -70,19 +70,36 @@ State your target level in your Pull Request.
 
 > **Note:** You will see a ❌ (**Red Cross**) initially because the methods throw `NotImplementedException`. Your goal is to turn it ✅ (**Green**).
 
+---
+
+### 📝 Audit & Validation Rules (Strict)
+
+Our automated auditor (`audit.yml`) enforces the following rules. Please check this before pushing your code to avoid immediate rejection:
+
+1.  **Anti-Pattern Ban:** The auditor scans for synchronous blocking calls.
+    * ❌ **Forbidden:** `.Result`, `.Wait()`, `Thread.Sleep()`.
+    * ✅ **Required:** Use `await`, `Task.Delay()`.
+2.  **Structure Integrity:** Do not rename or move `InventoryService.cs` or the Test project.
+3.  **Tests:** You must pass the provided Unit Tests. You may add new tests, but **do not modify or delete** the existing validation logic.
+
+---
+
 ### 🧪 Evaluation Criteria (PureStack Audit)
+
+> **How we grade:** The **Automated Auditor** validates correctness (Pass/Fail). If you pass the automated gate, a **PureStack Engineer** will review your code for Architecture and Style (Levels 2 & 1).
 
 | Criteria | Weight | Audit Focus |
 | :--- | :--- | :--- |
-| **Correctness** | 30% | Do tests pass? Is the logic sound? |
+| **Correctness** | 30% | Do tests pass? Is the logic sound? (Automated) |
 | **LINQ Mastery** | 25% | Efficient use of `.Where()`, `.Select()` vs `.ToList()` (Materialization). |
 | **Architecture** | 30% | Proper use of Dependency Injection and Separation of Concerns. |
 | **Code Style** | 15% | Naming conventions, null checks, and exception handling. |
 
 ---
 
-### 🚨 Project Structure (Strict)
-To ensure our **Automated Auditor** works, keep this structure:
+### 🚨 Project Structure
+To ensure our Automated Auditor works, keep the base structure.
+*(Note: If attempting Level 2, you are encouraged to add new folders like `/Repositories` or `/DTOs`)*.
 
 ```text
 /

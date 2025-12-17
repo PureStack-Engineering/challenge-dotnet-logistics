@@ -9,18 +9,23 @@ on:
 jobs:
   audit-dotnet:
     runs-on: ubuntu-latest
+    name: 👮 PureStack Quality Gate
 
     steps:
       - name: 📥 Checkout Code
         uses: actions/checkout@v4
 
-      - name: 🔍 Audit .NET Structure
+      - name: 🔍 Phase 1: Structural Integrity
         run: |
-          echo "Checking Critical Files..."
-          if [ ! -f "src/PureStackLogistics/Program.cs" ]; then echo "❌ Missing Program.cs"; exit 1; fi
+          echo "::group::File Validation"
+          # Critical: The solution must exist
+          if [ ! -f "PureStackLogistics.sln" ]; then echo "❌ Missing Solution File"; exit 1; fi
+          
+          # Critical: The service to implement must exist
           if [ ! -f "src/PureStackLogistics/Services/InventoryService.cs" ]; then echo "❌ Missing InventoryService.cs"; exit 1; fi
-          if [ ! -f "tests/PureStackLogistics.Tests/InventoryTests.cs" ]; then echo "❌ Missing Tests"; exit 1; fi
-          echo "✅ .NET Project Structure Validated."
+          
+          echo "✅ Project Structure seems valid."
+          echo "::endgroup::"
 
       - name: 🔧 Setup .NET Core
         uses: actions/setup-dotnet@v4
@@ -30,8 +35,46 @@ jobs:
       - name: 📦 Restore Dependencies
         run: dotnet restore
 
+      - name: 🕵️ Phase 2: Anti-Pattern Detection
+        run: |
+          echo "::group::Static Analysis"
+          # Ban synchronous blocking on Tasks (Crucial for Level 1)
+          if grep -r --include="*.cs" "\.Result" src/; then
+            echo "❌ CRITICAL: Blocking call '.Result' detected. Use 'await' instead."
+            exit 1
+          fi
+          if grep -r --include="*.cs" "\.Wait(" src/; then
+            echo "❌ CRITICAL: Blocking call '.Wait()' detected. Use 'await' instead."
+            exit 1
+          fi
+          if grep -r --include="*.cs" "Thread.Sleep" src/; then
+            echo "❌ CRITICAL: 'Thread.Sleep' detected. Use 'Task.Delay' instead."
+            exit 1
+          fi
+          echo "✅ No major anti-patterns detected."
+          echo "::endgroup::"
+
+      - name: 🏗️ Phase 3: Architecture Scout (Level 2 Check)
+        # This step doesn't fail the build, but informs the reviewer
+        run: |
+          echo "::group::Architecture Capability Scan"
+          INTERFACE_COUNT=$(find src/PureStackLogistics -name "I*Repository.cs" | wc -l)
+          CLASS_COUNT=$(find src/PureStackLogistics -name "*Repository.cs" | wc -l)
+          
+          if [ "$INTERFACE_COUNT" -gt 0 ]; then
+            echo "🏆 PRO LEVEL DETECTED: Candidate implemented $INTERFACE_COUNT Interface(s)."
+          else
+            echo "ℹ️ Basic Level: No Repository Interfaces found."
+          fi
+          
+          if [ "$CLASS_COUNT" -gt 0 ]; then
+            echo "🏆 PRO LEVEL DETECTED: Candidate implemented $CLASS_COUNT Repository Class(es)."
+          fi
+          echo "::endgroup::"
+
       - name: 🏗️ Build Project
         run: dotnet build --no-restore
 
-      - name: 🧪 Run Tests (Smoke Check)
+      - name: 🧪 Phase 4: Functional Validation
+        # Enforce strict passing of tests
         run: dotnet test --no-build --verbosity normal

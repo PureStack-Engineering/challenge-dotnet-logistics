@@ -20,10 +20,8 @@ jobs:
           echo "::group::File Validation"
           # Critical: The solution must exist
           if [ ! -f "PureStackLogistics.sln" ]; then echo "❌ Missing Solution File"; exit 1; fi
-          
           # Critical: The service to implement must exist
           if [ ! -f "src/PureStackLogistics/Services/InventoryService.cs" ]; then echo "❌ Missing InventoryService.cs"; exit 1; fi
-          
           echo "✅ Project Structure seems valid."
           echo "::endgroup::"
 
@@ -38,7 +36,7 @@ jobs:
       - name: 🕵️ Phase 2: Anti-Pattern Detection
         run: |
           echo "::group::Static Analysis"
-          # Ban synchronous blocking on Tasks (Crucial for Level 1)
+          # Ban synchronous blocking on Tasks
           if grep -r --include="*.cs" "\.Result" src/; then
             echo "❌ CRITICAL: Blocking call '.Result' detected. Use 'await' instead."
             exit 1
@@ -55,18 +53,15 @@ jobs:
           echo "::endgroup::"
 
       - name: 🏗️ Phase 3: Architecture Scout (Level 2 Check)
-        # This step doesn't fail the build, but informs the reviewer
         run: |
           echo "::group::Architecture Capability Scan"
           INTERFACE_COUNT=$(find src/PureStackLogistics -name "I*Repository.cs" | wc -l)
           CLASS_COUNT=$(find src/PureStackLogistics -name "*Repository.cs" | wc -l)
-          
           if [ "$INTERFACE_COUNT" -gt 0 ]; then
             echo "🏆 PRO LEVEL DETECTED: Candidate implemented $INTERFACE_COUNT Interface(s)."
           else
             echo "ℹ️ Basic Level: No Repository Interfaces found."
           fi
-          
           if [ "$CLASS_COUNT" -gt 0 ]; then
             echo "🏆 PRO LEVEL DETECTED: Candidate implemented $CLASS_COUNT Repository Class(es)."
           fi
@@ -76,5 +71,4 @@ jobs:
         run: dotnet build --no-restore
 
       - name: 🧪 Phase 4: Functional Validation
-        # Enforce strict passing of tests
         run: dotnet test --no-build --verbosity normal

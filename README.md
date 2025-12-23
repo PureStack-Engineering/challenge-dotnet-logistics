@@ -3,6 +3,15 @@
 **PureStack.es - Engineering Validation Protocol.**
 > *"We don't just want code that compiles. We want code that scales."*
 
+> [!TIP]
+> **HOW TO START THIS CHALLENGE**
+> 1. Click the green **"Use this template"** button (top right) -> **"Create a new repository"**.
+> 2. Select **"Private"** visibility (Crucial to prevent spoilers).
+> 3. Clone your new private repository to your machine.
+> 4. Once finished, invite user **[JLMoraCastilla](https://github.com/JLMoraCastilla)** as a collaborator to review.
+>
+> ⚠️ **DO NOT FORK** this repository directly, as it will force your solution to be public.
+
 ---
 
 ### 📋 Context & Mission
@@ -12,7 +21,7 @@ Welcome to the PureStack Technical Validation Protocol for .NET Engineering.
 **The Mission:** Implement the `InventoryService` class to handle product creation and retrieval, adhering to **SOLID principles**.
 
 ### 🚦 Certification Levels (Choose your Difficulty)
-State your target level in your Pull Request.
+State your target level in your Pull Request (or commit message).
 
 #### 🥉 Level 3: Essential / Mid-Level
 * **Focus:** Logic, LINQ & EF Core.
@@ -56,7 +65,7 @@ State your target level in your Pull Request.
 
 ### 🚀 Execution Instructions
 
-1.  **Fork** this repository.
+1.  **Use the Template:** Create your **Private Repository** using the instructions at the top of this file.
 2.  Restore dependencies:
     ```bash
     dotnet restore
@@ -66,7 +75,7 @@ State your target level in your Pull Request.
     ```bash
     dotnet test
     ```
-5.  Submit via **Pull Request**.
+5.  **Submit:** Push your changes to your private repo and invite the reviewer.
 
 > **Note:** You will see a ❌ (**Red Cross**) initially because the methods throw `NotImplementedException`. Your goal is to turn it ✅ (**Green**).
 
@@ -115,3 +124,18 @@ To ensure our Automated Auditor works, keep the base structure.
 │   └── PureStackLogistics.Tests/   # xUnit Tests
 ├── PureStackLogistics.sln          # Solution File
 └── README.md
+```
+---
+## ⚖️ License & Legal Notice
+
+**© 2025 PureStack.es. All Rights Reserved.**
+
+This repository is "Source Available" for **evaluation purposes only**.
+
+* **Public viewing:** Allowed.
+* **Commercial use:** ❌ Strictly Prohibited.
+* **Redistribution:** ❌ Strictly Prohibited.
+
+By accessing this material, you agree to the terms in `LICENSE.md`.
+
+> **🚫 Publishing solutions to public repositories is a violation of these terms.**

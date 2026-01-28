@@ -12,7 +12,7 @@ namespace PureStackLogistics.Tests;
 
 public class InventoryTests
 {
-    // Helper para crear una DB limpia en cada test
+    
     private AppDbContext GetInMemoryDbContext()
     {
         var options = new DbContextOptionsBuilder<AppDbContext>()
@@ -39,20 +39,18 @@ public class InventoryTests
             Category = "Electronics" 
         };
 
-        // Act
         var result = await service.AddProductAsync(product);
 
-        // Assert
         result.Id.Should().BeGreaterThan(0, "the database should assign an ID");
         context.Products.Count().Should().Be(1);
     }
 
-    [Theory] // Usamos Theory para probar varios casos inválidos
+    [Theory] 
     [InlineData(0)]
     [InlineData(-10)]
     public async Task AddProduct_ShouldThrowException_WhenPriceIsInvalid(decimal invalidPrice)
     {
-        // Arrange
+
         var context = GetInMemoryDbContext();
         var service = new InventoryService(context);
         var product = new Product 
@@ -63,26 +61,24 @@ public class InventoryTests
             Category = "Test" 
         };
 
-        // Act & Assert
-        // El candidato debe validar: if (price <= 0) throw new ArgumentException(...)
         await Assert.ThrowsAsync<ArgumentException>(() => service.AddProductAsync(product));
     }
 
     [Fact]
     public async Task AddProduct_ShouldThrowException_WhenNameIsEmpty()
     {
-        // Arrange
+      
         var context = GetInMemoryDbContext();
         var service = new InventoryService(context);
         var product = new Product 
         { 
-            Name = "", // Invalid
+            Name = "",
             Price = 100, 
             Stock = 1, 
             Category = "Test" 
         };
 
-        // Act & Assert
+      
         await Assert.ThrowsAsync<ArgumentException>(() => service.AddProductAsync(product));
     }
 
@@ -107,10 +103,10 @@ public class InventoryTests
             Category = "Industrial" 
         };
 
-        // Act
+      
         var result = await service.AddProductAsync(product);
 
-        // Assert
+       
         result.IsHazardous.Should().Be(expectedHazardous, 
             $"products containing 'Chemical' or 'Acid' must be Hazardous. Name was: {name}");
     }
@@ -122,7 +118,7 @@ public class InventoryTests
     [Fact]
     public async Task GetStock_ShouldFilterByCategory_WhenCategoryProvided()
     {
-        // Arrange: Seed Database with mixed data
+       
         var context = GetInMemoryDbContext();
         context.Products.AddRange(
             new Product { Name = "Banana", Category = "Food", Price = 1, Stock = 100 },
@@ -134,23 +130,21 @@ public class InventoryTests
 
         var service = new InventoryService(context);
 
-        // Act
-        // Asumimos firma: GetStockAsync(string category)
+      
         var foodItems = await service.GetStockAsync("Food");
         var techItems = await service.GetStockAsync("Electronics");
 
-        // Assert
+       
         foodItems.Should().HaveCount(2);
         techItems.Should().HaveCount(2);
-        
-        // Verificar que no se mezclan
+      
         foodItems.All(p => p.Category == "Food").Should().BeTrue();
     }
 
     [Fact]
     public async Task GetStock_ShouldReturnAll_WhenCategoryIsNull()
     {
-        // Arrange
+      
         var context = GetInMemoryDbContext();
         context.Products.Add(new Product { Name = "A", Category = "C1", Price = 10, Stock = 1 });
         context.Products.Add(new Product { Name = "B", Category = "C2", Price = 10, Stock = 1 });
@@ -158,10 +152,9 @@ public class InventoryTests
 
         var service = new InventoryService(context);
 
-        // Act
-        var allItems = await service.GetStockAsync(null); // Pasamos null para pedir todo
+     
+        var allItems = await service.GetStockAsync(null);
 
-        // Assert
         allItems.Should().HaveCount(2);
     }
 }
